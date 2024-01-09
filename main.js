@@ -79,7 +79,10 @@ function summonCactus(){
             scale(2),
             move(LEFT, cactSpeed),
             "Cactus"
-        ])
+        ]);
+        wait(rand(3,5), () =>{
+            summonCactus();
+        })
     });
 }
 
