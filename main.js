@@ -1,12 +1,13 @@
 import kaboom from "./libs/kaboom.mjs"
 
 const FLOOR = 100
-const JUMP_STRENGTH= 800
+const JUMP_STRENGTH= 925 
 const xPos = 100;
 const yPos = 500;
 
-const cactXPos = 1300;
-const cactYPos = 705;
+const cactXPos = 1200;
+const cactYPos = 530;
+const cactSpeed = 250;
 
 kaboom({
     // width: 1280,
@@ -69,15 +70,24 @@ add([
 
 // add cactus
 function summonCactus(){
-    add([
-        sprite("cactus"),
-        area(),
-        pos(cactXPos,cactYPos),
-        anchor("botleft"),
-        scale(2)
-
-    ])
+    loop(3  , () => {
+        add([
+            sprite("cactus"),
+            area(),
+            pos(cactXPos,cactYPos),
+            anchor("botleft"),
+            scale(2),
+            move(LEFT, cactSpeed),
+            "Cactus"
+        ])
+    });
 }
+
+Dino.onCollide("Cactus", () =>{
+    addKaboom(Dino.pos);
+    shake();
+});
+
 summonCactus()
 setGravity(1600)
 
