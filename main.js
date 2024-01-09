@@ -1,5 +1,9 @@
 import kaboom from "./libs/kaboom.mjs"
 
+const FLOOR = 100
+const JUMP_STRENGTH= 800
+
+
 kaboom({
     // width: 1280,
     // height: 720,
@@ -13,13 +17,13 @@ loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
     anims: {
         idle: {
             from: 1,
-            to: 8,
+            to: 8  ,
             loop: true,
         },
     },
 })
 
-const FLOOR = 100
+
 
 const Dino = add([
     sprite("dino",{
@@ -27,7 +31,7 @@ const Dino = add([
         
     }),
     pos(20,150),
-    scale(1.5 ),
+    scale(1.5),
     area(),
     body(),
     "Dino",
@@ -35,7 +39,9 @@ const Dino = add([
 
 //  .jump() when space key is pressed
 onKeyPress("space", () => {
-    Dino.jump()
+    if (Dino.isGrounded()) {
+        Dino.jump(JUMP_STRENGTH);
+    }
 })
 Dino.play('idle')
 // add platform
