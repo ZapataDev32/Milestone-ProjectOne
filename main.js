@@ -2,7 +2,11 @@ import kaboom from "./libs/kaboom.mjs"
 
 const FLOOR = 100
 const JUMP_STRENGTH= 800
+const xPos = 100;
+const yPos = 500;
 
+const cactXPos = 1300;
+const cactYPos = 705;
 
 kaboom({
     // width: 1280,
@@ -23,19 +27,25 @@ loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
     },
 })
 
-
+loadSprite("cactus","./assets/cactus.png")
 
 const Dino = add([
     sprite("dino",{
         animSpeed: 1,
         
     }),
-    pos(20,150),
+    pos(xPos,yPos),
     scale(1.5),
     area(),
     body(),
     "Dino",
 ])
+
+// const Cactus = add([
+//     sprite("cactus"),
+//     scale(2)
+    
+// ])
 
 //  .jump() when space key is pressed
 onKeyPress("space", () => {
@@ -56,6 +66,19 @@ add([
     
 ])
 
+
+// add cactus
+function summonCactus(){
+    add([
+        sprite("cactus"),
+        area(),
+        pos(cactXPos,cactYPos),
+        anchor("botleft"),
+        scale(2)
+
+    ])
+}
+summonCactus()
 setGravity(1600)
 
 // Dino.play("idle", {
