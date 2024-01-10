@@ -5,9 +5,11 @@ const JUMP_STRENGTH= 925
 const xPos = 100;
 const yPos = 500;
 
+const SPD = 320;
+
 const cactXPos = 1200;
 const cactYPos = 530;
-const cactSpeed = 250;
+const cactSpeed = 200;
 
 kaboom({
     // width: 1280,
@@ -42,11 +44,13 @@ const Dino = add([
     "Dino",
 ])
 
-// const Cactus = add([
-//     sprite("cactus"),
-//     scale(2)
-    
-// ])
+onKeyDown("right",() =>{
+    Dino.move(SPD,0)
+})
+
+onKeyDown("left",() =>{
+    Dino.move(-SPD,0)
+})
 
 //  .jump() when space key is pressed
 onKeyPress("space", () => {
@@ -70,20 +74,20 @@ add([
 
 // add cactus
 function summonCactus(){
-    loop(3  , () => {
-        add([
-            sprite("cactus"),
-            area(),
-            pos(cactXPos,cactYPos),
-            anchor("botleft"),
-            scale(2),
-            move(LEFT, cactSpeed),
-            "Cactus"
-        ]);
-        wait(rand(3,5), () =>{
-            summonCactus();
-        })
-    });
+    // loop(3 , () => {
+
+    // });
+    add([
+        sprite("cactus"),
+        area(),
+        pos(cactXPos,cactYPos),
+        anchor("botleft"),
+        scale(2),
+        move(LEFT, cactSpeed),
+        offscreen({destroy: true}),
+        "Cactus",
+    ]);
+    wait(rand(1.5,4), summonCactus);
 }
 
 Dino.onCollide("Cactus", () =>{
