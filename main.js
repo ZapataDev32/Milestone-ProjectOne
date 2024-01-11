@@ -1,7 +1,8 @@
 import kaboom from "./libs/kaboom.mjs"
 
 const FLOOR = 100
-const JUMP_STRENGTH= 925 
+const cactusFLOOR = 50
+const JUMP_STRENGTH= 1000 
 const xPos = 100;
 const yPos = 500;
 
@@ -32,71 +33,101 @@ loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
 
 loadSprite("cactus","./assets/cactus.png")
 
-const Dino = add([
-    sprite("dino",{
-        animSpeed: 1,
-        
-    }),
-    pos(xPos,yPos),
-    scale(1.5),
-    area(),
-    body(),
-    "Dino",
-])
-
-onKeyDown("right",() =>{
-    Dino.move(SPD,0)
-})
-
-onKeyDown("left",() =>{
-    Dino.move(-SPD,0)
-})
-
-//  .jump() when space key is pressed
-onKeyPress("space", () => {
-    if (Dino.isGrounded()) {
-        Dino.jump(JUMP_STRENGTH);
-    }
-})
-Dino.play('idle')
-// add platform
-
-add([
-    rect(width(), FLOOR),
-    outline(4),
-    area(),
-    pos(0, height() - 60),
-    body({isStatic: true}),
-    color(127,200,255),
-    
-])
 
 
-// add cactus
-function summonCactus(){
-    // loop(3 , () => {
-
-    // });
-    add([
-        sprite("cactus"),
+scene("game", () =>{
+    const Dino = add([
+        sprite("dino",{
+            animSpeed: 1,
+            
+        }),
+        pos(center()),
+        scale(1.5),
         area(),
-        pos(cactXPos,cactYPos),
-        anchor("botleft"),
+        body(),
+        "Dino",
+    ])
+    
+    onKeyDown("right",() =>{
+        Dino.move(SPD,0)
+    })
+    
+    onKeyDown("left",() =>{
+        Dino.move(-SPD,0)
+    })
+    
+    //  .jump() when space key is pressed
+    onKeyPress("space", () => {
+        if (Dino.isGrounded()) {
+            Dino.jump(JUMP_STRENGTH);
+        }
+    })
+    Dino.play('idle')
+    // add platform
+    
+    add([
+        rect(width(), FLOOR),
+        outline(4),
+        area(),
+        pos(0, height() - 60),
+        body({isStatic: true}),
+        color(127,200,255),
+        
+    ])
+    
+    
+    // add cactus
+    function summonCactus(){
+        // loop(3 , () => {
+    
+        // });
+        add([
+            sprite("cactus"),
+            area(),
+            pos(width(),height() - cactusFLOOR),
+            anchor("botleft"),
+            scale(2),
+            move(LEFT, cactSpeed),
+            offscreen({destroy: true}),
+            
+            "Cactus",
+        ]);
+        wait(rand(1.5,4), summonCactus);
+    }
+    
+    Dino.onCollide("Cactus", () =>{
+        addKaboom(Dino.pos);
+        shake();
+        burp()
+        go("lose", score); //go to "lose" scene here
+    });
+
+    let score = 0;
+    const scoreLabel = add([
+        text(score),
+        pos(UP),
         scale(2),
-        move(LEFT, cactSpeed),
-        offscreen({destroy: true}),
-        "Cactus",
-    ]);
-    wait(rand(1.5,4), summonCactus);
-}
+    ])
 
-Dino.onCollide("Cactus", () =>{
-    addKaboom(Dino.pos);
-    shake();
-});
+    onUpdate(() => {
+        score++;
+        scoreLabel.text = score;
+    })
+    
+    summonCactus()
+    setGravity(2600)
+})
 
-summonCactus()
-setGravity(1600)
+scene("lose", (score) =>{
+    add([
+        text("Game Over:" + score),
+        scale(2),
+        pos(center()),
+        anchor("center"),
+    ])
+})
+
+go("game")
 
 // Dino.play("idle", {
 //     loop: true,
