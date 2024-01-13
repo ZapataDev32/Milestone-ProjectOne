@@ -12,6 +12,8 @@ const cactXPos = 1200;
 const cactYPos = 530;
 const cactSpeed = 200;
 
+
+
 kaboom({
     // width: 1280,
     // height: 720,
@@ -32,7 +34,7 @@ loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
 })
 
 loadSprite("cactus","./assets/cactus.png")
-
+loadSprite("cactus2","./assets/cactus2.png")
 
 
 scene("game", () =>{
@@ -76,13 +78,21 @@ scene("game", () =>{
     ])
     
     
+    
     // add cactus
     function summonCactus(){
         // loop(3 , () => {
-    
+        const randomCactusIndex = rand();
+
+        let cactusSprite;
+        if(randomCactusIndex < 0.5) {
+            cactusSprite = "cactus2";
+        } else{
+            cactusSprite = "cactus";
+        }
         // });
         add([
-            sprite("cactus"),
+            sprite(cactusSprite),
             area(),
             pos(width(),height() - cactusFLOOR),
             anchor("botleft"),
