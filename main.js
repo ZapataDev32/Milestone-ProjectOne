@@ -23,13 +23,22 @@ kaboom({
 })
 
 loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
-    sliceX: 9,
+    sliceX: 14,
     // sliceY: 1,
     anims: {
         idle: {
             from: 1,
             to: 8  ,
             loop: true,
+        },
+        run: {
+            from: 11,
+            to: 13,
+            loop: true,
+        },
+        jump: {
+            from: 13,
+            to: 13,
         },
     },
 })
@@ -45,7 +54,7 @@ loadSprite("dactyl", "./assets/pterodactyl-Sheet.png", {
             from: 0,
             to: 1,
             loop: true,
-        }
+        },
     }
 })
 
@@ -62,26 +71,55 @@ scene("game", () =>{
         body(),
         "Dino",
     ])
-    // const destroyDinoArea = () => {
-    //     Dino.scale(0.5); // destroy the area component
-    // };
+
+
     
-    onKeyDown("right",() =>{
-        Dino.move(SPD,0)
-    })
-    
-    onKeyDown("left",() =>{
-        Dino.move(-SPD,0)
-    })
+
  
     
-    //  .jump() when space key is pressed
-    onKeyPress("space", () => {
-        if (Dino.isGrounded()) {
-            Dino.jump(JUMP_STRENGTH);
-        }
-    })
+    // //  .jump() when space key is pressed
+    // onKeyPress("space", () => {
+    //     if (Dino.isGrounded()) {
+    //         Dino.jump(JUMP_STRENGTH);
+    //         // Dino.play('jump')
+    //     } else if(Dino.isGrounded){
+    //         Dino.play('jump');
+    //     }
+    // })
+
     Dino.play('idle')
+    function movementManager(player){
+        // movement
+        onKeyDown("right",() =>{
+            player.move(SPD,0)
+        })
+        
+        onKeyDown("left",() =>{
+            player.move(-SPD,0)
+        })
+
+        // jump controls
+        onKeyPress("space",() =>{
+            if (Dino.isGrounded()) {
+                Dino.jump(JUMP_STRENGTH);
+                Dino.play('jump');
+            };
+        });    
+        onKeyRelease("space", () =>{
+            player.play('idle')
+        });
+        onKeyPress("up",() =>{
+            if (Dino.isGrounded()) {
+                Dino.jump(JUMP_STRENGTH);
+                Dino.play('jump');
+            };
+            onKeyRelease("up", () =>{
+                player.play('idle')
+            });
+        });    
+    }
+
+    movementManager(Dino)
     // add platform
     
     add([
@@ -214,10 +252,20 @@ scene("game", () =>{
 scene("lose", (score) =>{
     add([
         text("Game Over:" + score),
+        
         scale(2),
         pos(center()),
         anchor("center"),
     ])
+    add([
+        text("Press ENTER to Restart"),
+        scale(1.5),
+        
+    ])
+
+    onKeyPress("enter", () =>{
+        go("game")
+    })
 })
 
 go("game")
