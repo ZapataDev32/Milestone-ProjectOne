@@ -8,8 +8,8 @@ const JUMP_STRENGTH= 1100
 const centerTitle = 300
 let gameStart = false
 
-// const xPos = 100;
-// const yPos = 500;
+ // Initialize the high score from local storage or set it to 0 if not present
+let highScore = parseInt(localStorage.getItem("highScore")) || 0;
 
 const SPD = 320;
 
@@ -78,10 +78,11 @@ music.play()
 scene("game", () =>{
 
     const title = add([
-        text("Dino Game: " + "press ENTER to start!"),
+        text("Dino Game: \nPress Enter to start"),
         pos(0,height() - 300),
         scale(1.5),
     ])
+  
     const Dino = add([
         sprite("dino",{
             animSpeed: 1,
@@ -95,7 +96,7 @@ scene("game", () =>{
     ])
 
 
-
+    
     title
 
     onKeyPress("enter", () =>{
@@ -225,22 +226,7 @@ scene("game", () =>{
         wait(randi(2,5), summonCactus);
 
     }
-    // const byrd = add([
-    //         sprite("dactyl",{
-    //             animSpeed: 1,
-    //         }),
-    // //         area(),
-    // //         pos(width(),height() - dactylFLOOR),
-    // //         move(LEFT, dactylSpeed),
-    // //         scale(3),
-    // //         offscreen({destroy: true}),
-    //         "Bird",
-            
-    // ])
-    // wait(randi(10,18), byrd);
 
-        
-    // }
 
     function spawnBG1(){
         add([
@@ -295,6 +281,8 @@ scene("game", () =>{
         go("lose", score); //go to "lose" scene here
     });
 
+
+
     let score = 0;
     const scoreLabel = add([
         text(score),
@@ -306,6 +294,11 @@ scene("game", () =>{
         if(gameStart === true){
             score++;
             scoreLabel.text = score;
+
+             // Check if the current score is higher than the stored high score
+            if(score > highScore){
+                highScore = score;
+            }
         }
 
     })
@@ -323,6 +316,9 @@ scene("game", () =>{
 })
 
 scene("lose", (score) =>{
+     // Save the high score to local storage
+    localStorage.setItem("highScore", highScore);
+
     add([
         text("Game Over:" + score),
         
@@ -331,13 +327,20 @@ scene("lose", (score) =>{
         anchor("center"),
     ])
     add([
+        text("High Score: " + highScore),
+        pos(center().add(0, 50)),
+        scale(1.5),
+    ]);
+
+    add([
         text("Press ENTER to Restart"),
         scale(1.5),
         
     ])
 
     onKeyPress("enter", () =>{
-        go("game")
+        go("game"),
+        gameStart = false
     })
 
     
