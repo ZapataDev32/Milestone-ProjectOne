@@ -1,9 +1,13 @@
 import kaboom from "./libs/kaboom.mjs"
 
 const FLOOR = 100
+const BGFLOOR = 20
 const cactusFLOOR = 50
 const dactylFLOOR = 200
 const JUMP_STRENGTH= 1100 
+const centerTitle = 300
+let gameStart = false
+
 // const xPos = 100;
 // const yPos = 500;
 
@@ -12,14 +16,15 @@ const SPD = 320;
 // const cactXPos = 1200;
 // const cactYPos = 530;
 const cactSpeed = 200;
-const dactylSpeed = 230;
+// const dactylSpeed = 230;
 
 
 kaboom({
     // width: 1280,
     // height: 720,
     // letterbox: true,
-    background: [245, 193, 51],
+    background: [255, 213, 65],
+    
 })
 
 loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
@@ -45,8 +50,9 @@ loadSprite("dino", "./assets/lil_Dino-Sheet.png", {
 
 loadSprite("cactus","./assets/cactus.png")
 loadSprite("cactus2","./assets/cactus2.png")
-
-
+loadSprite("BG-1", "./assets/sand-BG.png")
+loadSound("bounce", "./assets/Bounce_Jump 5 NEW.wav")
+loadSound("bgMusic", "./assets/Casual - Level 1 (Loop_02).wav")
 loadSprite("dactyl", "./assets/pterodactyl-Sheet.png", {
     sliceX: 2,
     anims: {
@@ -58,8 +64,24 @@ loadSprite("dactyl", "./assets/pterodactyl-Sheet.png", {
     }
 })
 
+const music = play("bgMusic", {
+    volume: 0.3,
+    loop: true
+});
+
+const boing = play("bounce", {
+    volume: 0.2
+})
+music.play()
+
 
 scene("game", () =>{
+
+    const title = add([
+        text("Dino Game: " + "press ENTER to start!"),
+        pos(0,height() - 300),
+        scale(1.5),
+    ])
     const Dino = add([
         sprite("dino",{
             animSpeed: 1,
@@ -73,20 +95,13 @@ scene("game", () =>{
     ])
 
 
-    
 
- 
-    
-    // //  .jump() when space key is pressed
-    // onKeyPress("space", () => {
-    //     if (Dino.isGrounded()) {
-    //         Dino.jump(JUMP_STRENGTH);
-    //         // Dino.play('jump')
-    //     } else if(Dino.isGrounded){
-    //         Dino.play('jump');
-    //     }
-    // })
+    title
 
+    onKeyPress("enter", () =>{
+        gameStart = true
+        destroy(title)
+    })
     Dino.play('idle')
     function movementManager(player){
         // movement
@@ -103,6 +118,8 @@ scene("game", () =>{
             if (Dino.isGrounded()) {
                 Dino.jump(JUMP_STRENGTH);
                 Dino.play('jump');
+                // play("bounce");
+                boing.play();
             };
         });    
         onKeyRelease("space", () =>{
@@ -118,7 +135,7 @@ scene("game", () =>{
             });
         });    
     }
-
+    
     movementManager(Dino)
     // add platform
     
@@ -128,7 +145,7 @@ scene("game", () =>{
         area(),
         pos(0, height() - 60),
         body({isStatic: true}),
-        color(127,200,255),
+        color(180,32,42),
         
     ])
     
@@ -136,6 +153,9 @@ scene("game", () =>{
     
     // add cactus
     function summonCactus(){
+  
+
+
         // loop(3 , () => {
         const randomCactusIndex = randi(1,4);
         // const byrd = add([
@@ -158,47 +178,50 @@ scene("game", () =>{
         // } else {
         //     cactusSprite = "cactus";
         // }
-        if(cactusSprite === "cactus"){
-            add([
-                sprite("cactus"),
-                area(),
-                pos(width(),height() - cactusFLOOR),
-                anchor("botleft"),
-                scale(2),
-                move(LEFT, cactSpeed),
-                offscreen({destroy: true}),
-                
-                "Cactus",
-            ]);
-            // wait(randi(2,5), summonCactus);
-        } else if(cactusSprite === "cactus2"){
-            add([
-                sprite("cactus2"),
-                area(),
-                pos(width(),height() - cactusFLOOR),
-                anchor("botleft"),
-                scale(2),
-                move(LEFT, cactSpeed),
-                offscreen({destroy: true}),
-                
-                "Cactus",
-            ]);
-        } else if(cactusSprite === "dactyl"){
-            const byrd = add([
-                sprite("dactyl",{
-                    animSpeed: 1,
-                }),
-                area(),
-                pos(width(),height() - cactusFLOOR),
-                anchor("botleft"),
-                scale(3),
-                move(LEFT, cactSpeed),
-                offscreen({destroy: true}),
-                
-                "Cactus",
-            ]);
-            byrd.play("fly")
+        if(gameStart === true){
+            if(cactusSprite === "cactus"){
+                add([
+                    sprite("cactus"),
+                    area(),
+                    pos(width(),height() - cactusFLOOR),
+                    anchor("botleft"),
+                    scale(2),
+                    move(LEFT, cactSpeed),
+                    offscreen({destroy: true}),
+                    
+                    "Cactus",
+                ]);
+                // wait(randi(2,5), summonCactus);
+            } else if(cactusSprite === "cactus2"){
+                add([
+                    sprite("cactus2"),
+                    area(),
+                    pos(width(),height() - cactusFLOOR),
+                    anchor("botleft"),
+                    scale(2),
+                    move(LEFT, cactSpeed),
+                    offscreen({destroy: true}),
+                    
+                    "Cactus",
+                ]);
+            } else if(cactusSprite === "dactyl"){
+                const byrd = add([
+                    sprite("dactyl",{
+                        animSpeed: 1,
+                    }),
+                    area(),
+                    pos(width(),height() - cactusFLOOR),
+                    anchor("botleft"),
+                    scale(3),
+                    move(LEFT, cactSpeed),
+                    offscreen({destroy: true}),
+                    
+                    "Cactus",
+                ]);
+                byrd.play("fly")
+            }
         }
+
         wait(randi(2,5), summonCactus);
 
     }
@@ -218,6 +241,46 @@ scene("game", () =>{
 
         
     // }
+
+    function spawnBG1(){
+        add([
+            sprite("BG-1"),
+            pos(0, height() - BGFLOOR),
+            anchor("botleft"),
+            move(LEFT, SPD/1.4),
+            z(-1),
+            // scale(0,2),
+            "bg-1",
+        ])
+
+        // wait(2.5, spawnBG1)
+    }
+    
+    onUpdate("bg-1", (bg) =>{
+        if (bg.pos.x < -1200){
+            destroy(bg)
+        }
+    })
+
+    function spawnBG2(){
+        add([
+            sprite("BG-1"),
+            pos(width(), height() - BGFLOOR),
+            anchor("botleft"),
+            move(LEFT, SPD/1.4),
+            z(-1),
+            "bg-2",
+        ])
+
+        wait(3, spawnBG2)
+    }
+    
+    onUpdate("bg-2", (bg) =>{
+        if (bg.pos.x < -800){
+            destroy(bg)
+        }
+    })
+
    
     Dino.onCollide("Cactus",() =>{
         addKaboom(Dino.pos);
@@ -240,12 +303,22 @@ scene("game", () =>{
     ])
 
     onUpdate(() => {
-        score++;
-        scoreLabel.text = score;
+        if(gameStart === true){
+            score++;
+            scoreLabel.text = score;
+        }
+
     })
+
+    // if(score >= 500){
+    //     SPD = SPD*2
+    // }
+    
     
     summonCactus()
     // summonBird()
+    spawnBG1()
+    spawnBG2()
     setGravity(2600)
 })
 
@@ -266,6 +339,8 @@ scene("lose", (score) =>{
     onKeyPress("enter", () =>{
         go("game")
     })
+
+    
 })
 
 go("game")
