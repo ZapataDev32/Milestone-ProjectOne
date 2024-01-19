@@ -149,6 +149,17 @@ scene("game", () =>{
         color(180,32,42),
         
     ])
+
+    // add left screen wall, so player does not die
+    add([
+        rect(10, 400),
+        
+        area(),
+        pos(-8, height() - 300),
+        body({isStatic: true}),
+        color(180,32,42),
+        opacity(0.0)
+    ])
     
     
     
@@ -258,7 +269,7 @@ scene("game", () =>{
             "bg-2",
         ])
 
-        wait(3, spawnBG2)
+        wait(2.6, spawnBG2)
     }
     
     onUpdate("bg-2", (bg) =>{
