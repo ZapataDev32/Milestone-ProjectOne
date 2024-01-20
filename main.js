@@ -4,7 +4,7 @@ const FLOOR = 100
 const BGFLOOR = 20
 const cactusFLOOR = 50
 const dactylFLOOR = 200
-const JUMP_STRENGTH= 1100 
+const JUMP_STRENGTH= 1200 
 const centerTitle = 300
 let gameStart = false
 
@@ -13,10 +13,9 @@ let highScore = parseInt(localStorage.getItem("highScore")) || 0;
 
 const SPD = 320;
 
-// const cactXPos = 1200;
-// const cactYPos = 530;
+
 const cactSpeed = 200;
-// const dactylSpeed = 230;
+
 
 
 kaboom({
@@ -163,20 +162,10 @@ scene("game", () =>{
     
     
     
-    // add cactus
+    // this function adds cactus to screen
     function summonCactus(){
   
-
-
-        // loop(3 , () => {
         const randomCactusIndex = randi(1,4);
-        // const byrd = add([
-        //     sprite("dactyl", {
-        //         animSpeed: 1,
-        //     }),
-        //     "Bird",
-        // ])
-        // byrd.play("fly")
         let cactusSprite;
         if(randomCactusIndex === 1){
             cactusSprite = "cactus";
@@ -185,11 +174,6 @@ scene("game", () =>{
         } else if(randomCactusIndex == 3){
             cactusSprite = "cactus2";
         }
-        // if(randomCactusIndex < 0.6) {
-        //     cactusSprite = "cactus2";
-        // } else {
-        //     cactusSprite = "cactus";
-        // }
         if(gameStart === true){
             if(cactusSprite === "cactus"){
                 add([
@@ -314,13 +298,9 @@ scene("game", () =>{
 
     })
 
-    // if(score >= 500){
-    //     SPD = SPD*2
-    // }
     
     
     summonCactus()
-    // summonBird()
     spawnBG1()
     spawnBG2()
     setGravity(2600)
